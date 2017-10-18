@@ -169,8 +169,10 @@ def read_cpu_stats(container, dimensions, stats, t):
 
     cpu_usage = cpu_stats['cpu_usage']
     percpu = cpu_usage['percpu_usage']
-
-    for cpu, value in enumerate(percpu):
+    import multiprocessing
+    cpucount = multiprocessing.cpu_count()
+    for cpu in range(0,cpucount):
+        value = percpu[cpu]
         percpu_dims = dimensions.copy()
         percpu_dims['core'] = ('cpu%d' % cpu)
         emit(container, percpu_dims, 'cpu.percpu.usage', [value],
@@ -194,6 +196,9 @@ def read_cpu_stats(container, dimensions, stats, t):
 def get_cpu_percent(stats):
     cpu_percent = 0.0
     cpu_usage = stats['cpu_stats']['cpu_usage']
+    import multiprocessing
+    cpucount = multiprocessing.cpu_count()
+    
     if 'precpu_stats' in stats:
         precpu_stats = stats['precpu_stats']
         precpu_usage = precpu_stats['cpu_usage']
@@ -206,7 +211,8 @@ def get_cpu_percent(stats):
                 pre_system_cpu_usage = precpu_stats['system_cpu_usage']
                 system_delta = float(system_cpu_usage - pre_system_cpu_usage)
                 if system_delta > 0 and cpu_delta > 0:
-                    cpu_percent = cpu_delta / system_delta * len(percpu)
+                    #cpu_percent = cpu_delta / system_delta * len(percpu)
+                    cpu_percent = cpu_delta / system_delta * cpucount
                     cpu_percent *= 100
     return cpu_percent
 
