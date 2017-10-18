@@ -175,8 +175,8 @@ def read_cpu_stats(container, dimensions, stats, t):
         value = percpu[cpu]
         percpu_dims = dimensions.copy()
         percpu_dims['core'] = ('cpu%d' % cpu)
-        emit(container, percpu_dims, 'cpu.percpu.usage', [value],
-             type_instance='', t=t)
+        emit(container, dimensions, 'cpu.percpu.usage', [value],
+             type_instance='cpu%d' %(cpu,), t=t)
 
     items = sorted(cpu_stats['throttling_data'].items())
     emit(container, dimensions, 'cpu.throttling_data',
@@ -260,7 +260,10 @@ def read_cpu_shares_stats(container,
     # Get cpu shares used by container
     stats = cstats.stats
     dimensions = cstats.dimensions
-    num_cpus_host = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
+    import multiprocessing
+    num_cpus_host = multiprocessing.cpu_count()
+
+    #num_cpus_host = len(stats['cpu_stats']['cpu_usage']['percpu_usage'])
     shares_used_percent = 0.0
     cpu_shares = container_inspect['HostConfig']['CpuShares'] or \
         DEFAULT_SHARES
