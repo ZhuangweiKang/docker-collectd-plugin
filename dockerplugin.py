@@ -500,8 +500,12 @@ class DockerPlugin:
     MIN_DOCKER_API_STRICT_VERSION = StrictVersion(MIN_DOCKER_API_VERSION)
 
     # TODO: add support for 'networks' from API >= 1.20 to get by-iface stats.
-    METHODS = [read_network_stats, read_blkio_stats, read_cpu_stats,
+    # METHODS = [read_network_stats, read_blkio_stats, read_cpu_stats,
+    #            read_memory_stats]
+    # For now let's disable reading from the disk stats
+    METHODS = [read_network_stats, read_cpu_stats,
                read_memory_stats]
+
 
     def __init__(self, docker_url=None):
         self.docker_url = docker_url or DockerPlugin.DEFAULT_BASE_URL
