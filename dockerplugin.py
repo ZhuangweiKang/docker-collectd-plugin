@@ -149,12 +149,16 @@ def read_blkio_stats(container, dimensions, stats, t):
             blkio_dims['device_minor'] = str(device_minor_stats[type_instance])
 
             if len(values) == 5:
-                emit(container, blkio_dims, 'blkio', values,
+                # emit(container, blkio_dims, 'blkio', values,
+                #      type_instance=key, t=t)
+                emit(container, dimensions, 'blkio'+"-"+str(device_major_stats[type_instance])+"-"+str(device_minor_stats[type_instance]), values,
                      type_instance=key, t=t)
             elif len(values) == 1:
                 # For some reason, some fields contains only one value and
                 # the 'op' field is empty. Need to investigate this
-                emit(container, blkio_dims, 'blkio.single', values,
+                # emit(container, blkio_dims, 'blkio.single', values,
+                #      type_instance=key, t=t)
+                emit(container, dimensions, 'blkio.single'+"-"+str(device_major_stats[type_instance])+"-"+str(device_minor_stats[type_instance]), values,
                      type_instance=key, t=t)
             else:
                 log.warning(('Unexpected number of blkio stats for '
@@ -226,11 +230,17 @@ def read_network_stats(container, dimensions, stats, t):
         items = sorted(if_stats.items())
         interface_dims = dimensions.copy()
         interface_dims['interface'] = interface
+        # emit(container,
+        #      interface_dims,
+        #      'network.usage',
+        #      [x[1] for x in items],
+        #      t=t)
         emit(container,
-             interface_dims,
-             'network.usage',
+             dimensions,
+             'network.usage'+"-"+interface,
              [x[1] for x in items],
              t=t)
+
 
 
 def read_memory_stats(container, dimensions, stats, t):
