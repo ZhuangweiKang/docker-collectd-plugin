@@ -180,7 +180,7 @@ def read_cpu_stats(container, dimensions, stats, t):
         percpu_dims = dimensions.copy()
         percpu_dims['core'] = ('cpu%d' % cpu)
         emit(container, dimensions, 'cpu.percpu.usage', [value],
-             type_instance='cpu%d' %(cpu,), t=t)
+             type_instance='cpu-%d' %(cpu,), t=t)
 
     items = sorted(cpu_stats['throttling_data'].items())
     emit(container, dimensions, 'cpu.throttling_data',
