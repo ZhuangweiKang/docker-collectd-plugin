@@ -139,14 +139,14 @@ def read_blkio_stats(container, dimensions, stats, t):
             if k not in device_stats:
                 device_stats[k] = []
             device_stats[k].append(value['value'])
-            device_major_stats[k] = value['major']
-            device_minor_stats[k] = value['minor']
+           # device_major_stats[k] = value['major']
+           # device_minor_stats[k] = value['minor']
 
         for type_instance, values in device_stats.items():
             # add block device major and minor as dimensions
             blkio_dims = dimensions.copy()
-            blkio_dims['device_major'] = str(device_major_stats[type_instance])
-            blkio_dims['device_minor'] = str(device_minor_stats[type_instance])
+            #blkio_dims['device_major'] = str(device_major_stats[type_instance])
+            #blkio_dims['device_minor'] = str(device_minor_stats[type_instance])
 
             if len(values) == 5:
                 emit(container, blkio_dims, 'blkio', values,
@@ -500,11 +500,11 @@ class DockerPlugin:
     MIN_DOCKER_API_STRICT_VERSION = StrictVersion(MIN_DOCKER_API_VERSION)
 
     # TODO: add support for 'networks' from API >= 1.20 to get by-iface stats.
-    # METHODS = [read_network_stats, read_blkio_stats, read_cpu_stats,
-    #            read_memory_stats]
+    METHODS = [read_network_stats, read_blkio_stats, read_cpu_stats,
+                read_memory_stats]
     # For now let's disable reading from the disk stats
-    METHODS = [read_network_stats, read_cpu_stats,
-               read_memory_stats]
+    #METHODS = [read_network_stats, read_cpu_stats,
+    #           read_memory_stats]
 
 
     def __init__(self, docker_url=None):
