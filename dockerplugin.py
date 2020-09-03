@@ -39,6 +39,7 @@ from distutils.version import StrictVersion
 COLLECTION_INTERVAL = 10
 DEFAULT_SHARES = 1024
 
+EXTRA_CONTAINER_NAME_FILTER = 'psbench'
 
 def _c(c):
     """A helper method for representing a container in messages. If the given
@@ -742,6 +743,8 @@ class DockerPlugin:
         for container in containers:
             try:
                 container['Name'] = self._container_name(container['Names'])
+                if EXTRA_CONTAINER_NAME_FILTER not in container['Name']:
+                    continue
                 # Start a stats gathering thread if the container is new.
                 if container['Id'] not in self.stats:
                     if self.is_excluded(container):
