@@ -456,7 +456,7 @@ class ContainerStats(threading.Thread):
 
                 # Reset failure count on successful read from the stats API.
                 failures = 0
-            except Exception, e:
+            except Exception as e:
                 # If we encounter a failure, wait a second before retrying and
                 # mark the failures. After three consecutive failures, we'll
                 # stop the thread. If the container is still there, we'll spin
@@ -662,7 +662,7 @@ class DockerPlugin:
 
         try:
             version = self.client.version()['ApiVersion']
-        except IOError, e:
+        except IOError as e:
             # Log a warning if connection is not established
             collectd.warning((
                     'Unable to access Docker daemon at {url} in \
@@ -702,7 +702,7 @@ class DockerPlugin:
     def read_callback(self):
         try:
             version = self.client.version()['ApiVersion']
-        except IOError, e:
+        except IOError as e:
             # Log a warning if connection is not established
             log.exception(('Unable to access Docker daemon at {url}. '
                            'This may indicate SELinux problems. : {error}')
@@ -767,7 +767,7 @@ class DockerPlugin:
                         if method == read_network_stats and \
                            not cstats.hasNetworks:
                             cstats.hasNetworks = True
-                    except Exception, e:
+                    except Exception as e:
                         if method != read_network_stats or cstats.hasNetworks:
                             log.exception(('Unable to retrieve {method} stats '
                                            'for container {container}: {msg}')
@@ -788,12 +788,12 @@ class DockerPlugin:
                         containers_state.append({
                                     'container': container,
                                     'container_inspect': container_inspect})
-                    except Exception, e:
+                    except Exception as e:
                         log.exception(('Unable to retrieve cpu share and quota'
                                        ' stats for {container}: {msg}').format(
                                            container=_c(container), msg=e))
 
-            except Exception, e:
+            except Exception as e:
                 log.exception(('Unable to retrieve stats for container '
                                '{container}: {msg}')
                               .format(container=_c(container), msg=e))
@@ -945,8 +945,7 @@ if __name__ == '__main__':
             identifier += '/' + self.type
             if getattr(self, 'type_instance', None):
                 identifier += '-' + self.type_instance
-            print 'PUTVAL', identifier, \
-                ':'.join(map(str, [int(self.time)] + self.values))
+            print('PUTVAL', identifier, ':'.join(map(str, [int(self.time)] + self.values)))
 
     class ExecCollectd:
         def Values(self):
@@ -956,19 +955,19 @@ if __name__ == '__main__':
             pass
 
         def error(self, msg):
-            print 'ERROR: ', msg
+            print('ERROR: ', msg)
 
         def warning(self, msg):
-            print 'WARNING:', msg
+            print('WARNING:', msg)
 
         def notice(self, msg):
-            print 'NOTICE: ', msg
+            print('NOTICE: ', msg)
 
         def info(self, msg):
-            print 'INFO:', msg
+            print('INFO:', msg)
 
         def debug(self, msg):
-            print 'DEBUG: ', msg
+            print('DEBUG: ', msg)
 
     collectd = ExecCollectd()
 
